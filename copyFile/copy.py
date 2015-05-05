@@ -116,6 +116,9 @@ if __name__ == "__main__":
 	OVERRIDE = cfg.get("Target", "override")
 	REMOVE_ALL = cfg.get("Target", "removeAll")
 	if REMOVE_ALL and os.path.exists(DST_DIR):
-		rmtree(DST_DIR)
+		try:
+			rmtree(DST_DIR)
+		except:
+			print "IOError"
 	if DST_DIR is not "ERROR":
 		walkDir(SRC_DIR, DST_DIR)
