@@ -110,8 +110,8 @@ def runCopy(config_file):
 	TYPES = typesStr.split('|')
 	ignoreStr = cfg.get("SRC", "ignore")
 	IGNORE_FILES = ignoreStr.split('|')
-	OVERRIDE = cfg.get("Target", "override")
-	REMOVE_ALL = cfg.get("Target", "removeAll")
+	OVERRIDE = cfg.getboolean("Target", "override")
+	REMOVE_ALL = cfg.getboolean("Target", "removeAll")
 	if REMOVE_ALL and os.path.exists(DST_DIR):
 		try:
 			rmtree(DST_DIR)
