@@ -74,8 +74,6 @@ def walkDir(curdir, dstdir):
 TYPES = []
 IGNORE_FILES = []
 def checkIgnore(filePath):
-	#global TYPES
-	#global IGNORE_FILES
 	if filePath in IGNORE_FILES:
 		return True
 	if "*" in TYPES:
@@ -91,14 +89,13 @@ def checkIgnore(filePath):
 		return True
 	return False
 	
-if __name__ == "__main__":
-	import sys
-	
-	config_file = 'copy.ini'
-	for arg in sys.argv[1:]:
-		config_file = arg
-		break
-	#global TYPES, IGNORE_FILES
+
+def runCopy(config_file):
+	global TYPES, IGNORE_FILES
+	print config_file
+	if config_file.rfind('.ini') == -1:
+		return
+	print config_file
 	cfg = CP.ConfigParser()
 	cfg.readfp(open(config_file))
 	SRC_DIR = os.getcwd()
@@ -122,3 +119,33 @@ if __name__ == "__main__":
 			print "IOError"
 	if DST_DIR is not "ERROR":
 		walkDir(SRC_DIR, DST_DIR)
+		
+		
+		
+if __name__ == "__main__":
+	print '*' * 60
+	print "Copy Desc"
+	print "copy.py read and run copy.ini"
+	print "copy.py xxx.ini			Run with config xxx.ini "
+	print "copy.py dir .\\configDir 	Run with all config of dir configDir"
+	print "copy.py dir .\\configDir R	Run with all config of dir configDir and recursion"
+	print '*' * 60
+	import sys
+	config_file = 'copy.ini'
+	if len(sys.argv) > 2 and sys.argv[1] == 'dir':
+		dir = parserPath(sys.argv[2])
+		if os.path.isdir(dir):
+			loopRange = os.walk(dir)
+			recursion = False
+			if len(sys.argv) > 3 and (sys.argv[3] == 'r' or sys.argv[3] == 'R'): 
+				recursion = True
+			for _root, _dirs, _files in loopRange:
+				if not recursion and _root != dir:
+					continue
+				for fileName in _files:
+					runCopy(os.path.join(_root, fileName))
+	else:
+		if len(sys.argv) > 1:
+			config_file = sys.argv[1]
+		runCopy(config_file)
+	
