@@ -3,9 +3,12 @@
 from downloader import *
 from jdimage import *
 import getpass
-import os
+import os, sys
 
 if __name__ == "__main__":
+	serverGroup = 0
+	if len(sys.argv) > 1 and sys.argv[1].isdigit():
+		serverGroup = int(sys.argv[1])
 	id = raw_input('Input ID(Number): ')
 	str_id = str(id)
 	while len(str_id) is 0 or not str_id.isdigit():
@@ -37,4 +40,4 @@ if __name__ == "__main__":
 			save_dir = os.path.join('C:\\Users', getpass.getuser(), 'Desktop', str_id)
 			if not os.path.isdir(save_dir):
 				os.makedirs(save_dir)
-			download_img_bat(dns_prefetchs[default]+ '/n%s'%images_sub[url], dl_dic, save_dir)
+			download_img_bat(dns_prefetchs[default]+ '/popWaterMark', dl_dic, save_dir)#'/n%s'%serverGroup
