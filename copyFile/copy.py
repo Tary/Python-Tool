@@ -4,13 +4,13 @@ import os
 from shutil import copyfile, rmtree
 
 
-def parserPath(dir):
+def parserPath(dir, basedir):
 	if len(dir) <= 1:
 		dir = "ERROR"
 	elif dir.find(":") is not -1:
 		pass
 	elif dir[0] is ".":
-		currentDir = os.getcwd()
+		currentDir = basedir#os.getcwd()
 		if dir.find(".\\") is 0:
 			dir = dir.replace('.\\', '')
 			if dir is "":
@@ -90,22 +90,20 @@ def checkIgnore(filePath):
 	return False
 	
 
-def runCopy(config_file):
+def runCopy(config_file, basedir):
 	global TYPES, IGNORE_FILES
-	print config_file
 	if config_file.rfind('.ini') == -1:
 		return
-	print config_file
 	cfg = CP.ConfigParser()
 	cfg.readfp(open(config_file))
-	SRC_DIR = os.getcwd()
+	SRC_DIR = basedir#os.getcwd()
 	if cfg.has_option("SRC", "dir"):
 		srcDir = cfg.get("SRC", "dir")
 		if srcDir is not "" and srcDir is not None:
 			SRC_DIR = srcDir;
-	SRC_DIR = parserPath(SRC_DIR)
+	SRC_DIR = parserPath(SRC_DIR, basedir)
 	DST_DIR = cfg.get("Target", "dir")
-	DST_DIR = parserPath(DST_DIR)
+	DST_DIR = parserPath(DST_DIR, basedir)
 	typesStr = cfg.get("SRC", "types")
 	TYPES = typesStr.split('|')
 	ignoreStr = cfg.get("SRC", "ignore")
@@ -131,9 +129,9 @@ if __name__ == "__main__":
 	print "copy.py dir .\\configDir R	Run with all config of dir configDir and recursion"
 	print '*' * 60
 	import sys
-	config_file = 'copy.ini'
+	config_file = '.\\copy.ini'
 	if len(sys.argv) > 2 and sys.argv[1] == 'dir':
-		dir = parserPath(sys.argv[2])
+		dir = parserPath(sys.argv[2], os.getcwd())
 		if os.path.isdir(dir):
 			loopRange = os.walk(dir)
 			recursion = False
@@ -143,9 +141,11 @@ if __name__ == "__main__":
 				if not recursion and _root != dir:
 					continue
 				for fileName in _files:
-					runCopy(os.path.join(_root, fileName))
+					runCopy(os.path.join(_root, fileName), _root)
 	else:
 		if len(sys.argv) > 1:
 			config_file = sys.argv[1]
-		runCopy(config_file)
+		cfgPath = parserPath(config_file, os.getcwd())
+		if(os.path.exists(cfgPath) and cfgPath.rfind('\\') != -1):
+			runCopy(config_file, cfgPath[:cfgPath.rfind('\\')])
 	
