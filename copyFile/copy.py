@@ -7,7 +7,7 @@ from shutil import copyfile, rmtree
 def parserPath(dir, basedir):
 	if len(dir) <= 1:
 		dir = "ERROR"
-	elif dir.find(":") is not -1:
+	elif dir.find(":") is not -1 or dir[:2] == "\\":
 		pass
 	elif dir[0] is ".":
 		currentDir = basedir#os.getcwd()
@@ -52,6 +52,7 @@ def copyFileAuto(src, dst):
 		return
 	if -1 != dst.rfind('.') and (-1 != dst.rfind('\\') or -1 != dst.rfind('/')):
 		createDir(dst)
+	print("Copy %s To %s"%(src, dst))
 	copyfile(src, dst)
 
 def walkDir(curdir, dstdir):

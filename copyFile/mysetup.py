@@ -16,7 +16,7 @@ py2exe_options = {
 setup(
       name = 'File Copyer',
       version = '1.0',
-      windows = ['copy.py',], 
+      console = ['copy.py',], #window
       zipfile = None,
       options = {'py2exe': py2exe_options}
       )
